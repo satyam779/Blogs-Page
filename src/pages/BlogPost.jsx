@@ -168,7 +168,7 @@ function BlogPost() {
         <div className="blog-post-shell blog-post-hero-grid">
           <div className="blog-post-copy">
             <Link to="/" className="back-link">
-              {"🡸 Back to all posts"}
+              {"← Back to all posts"}
             </Link>
             <span className="hero-badge">{post.category}</span>
             <h1 className="blog-post-heading">{post.title}</h1>
