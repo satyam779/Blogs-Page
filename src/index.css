@@ -538,6 +538,23 @@ a {
   margin-top: 20px;
 }
 
+.blog-post-strong {
+  color: #0f172a;
+  font-weight: 800;
+}
+
+.blog-post-inline-link {
+  color: teal;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.blog-post-inline-link:hover {
+  color: #0f766e;
+}
+
 .blog-post-sidebar {
   position: sticky;
   top: 24px;

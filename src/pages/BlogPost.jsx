@@ -2,6 +2,47 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { fetchPublishedPostById } from "../lib/posts";
 
+function renderFormattedText(text) {
+  const pattern = /<link>(.*?)@(.*?)<\/?link>|<b>(.*?)<\/?b>/g;
+  const parts = [];
+  let lastIndex = 0;
+  let match;
+
+  while ((match = pattern.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+
+    if (match[1] && match[2]) {
+      parts.push(
+        <a
+          key={`link-${match.index}`}
+          href={match[2].trim()}
+          target="_blank"
+          rel="noreferrer"
+          className="blog-post-inline-link"
+        >
+          {match[1].trim()}
+        </a>
+      );
+    } else if (match[3]) {
+      parts.push(
+        <strong key={`bold-${match.index}`} className="blog-post-strong">
+          {match[3].trim()}
+        </strong>
+      );
+    }
+
+    lastIndex = pattern.lastIndex;
+  }
+
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+
+  return parts;
+}
+
 function BlogPost() {
   const { id } = useParams();
   const [post, setPost] = useState(null);
@@ -90,7 +131,7 @@ function BlogPost() {
         <div className="blog-post-shell blog-post-hero-grid">
           <div className="blog-post-copy">
             <Link to="/" className="back-link">
-              {"<- Back to all posts"}
+              {"🡸 Back to all posts"}
             </Link>
             <span className="hero-badge">{post.category}</span>
             <h1 className="blog-post-heading">{post.title}</h1>
@@ -123,7 +164,7 @@ function BlogPost() {
           <article className="blog-post-article">
             {post.content.map((paragraph, index) => (
               <p key={index} className="blog-post-paragraph">
-                {paragraph}
+                {renderFormattedText(paragraph)}
               </p>
             ))}
           </article>
