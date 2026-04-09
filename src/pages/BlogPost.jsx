@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { fetchPublishedPostById } from "../lib/posts";
+import { fetchPublishedPostById, fetchRecentPublishedPosts } from "../lib/posts";
 
 function renderFormattedText(text) {
   const pattern = /<link>(.*?)@(.*?)<\/?link>|<b>(.*?)<\/?b>/g;
@@ -75,6 +75,7 @@ function renderContentBlock(block, index) {
 function BlogPost() {
   const { id } = useParams();
   const [post, setPost] = useState(null);
+  const [recentPosts, setRecentPosts] = useState([]);
   const [status, setStatus] = useState("loading");
   const [message, setMessage] = useState("");
 
@@ -107,12 +108,19 @@ function BlogPost() {
 
       if (!data) {
         setPost(null);
+        setRecentPosts([]);
         setStatus("not_found");
         setMessage("The article you requested does not exist or is not published.");
         return;
       }
 
       setPost(data);
+      const recentResult = await fetchRecentPublishedPosts(4, data.id);
+
+      if (!ignore && !recentResult.error) {
+        setRecentPosts(recentResult.data);
+      }
+
       setStatus("ready");
     }
 
@@ -212,6 +220,34 @@ function BlogPost() {
                 </div>
               </div>
             </div>
+
+            {recentPosts.length > 0 && (
+              <div className="blog-post-sidebar-card">
+                <p className="blog-post-sidebar-title">Recent Posts</p>
+                <div className="blog-post-recent-list">
+                  {recentPosts.map((recentPost) => (
+                    <Link
+                      key={recentPost.id}
+                      to={`/blog/${recentPost.id}`}
+                      className="blog-post-recent-item"
+                    >
+                      <img
+                        src={recentPost.image}
+                        alt={recentPost.title}
+                        className="blog-post-recent-image"
+                      />
+                      <div className="blog-post-recent-content">
+                        <p className="blog-post-recent-title">{recentPost.title}</p>
+                        <p className="blog-post-recent-meta">
+                          {recentPost.date}
+                          {recentPost.readTime ? ` | ${recentPost.readTime}` : ""}
+                        </p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </aside>
         </div>
       </section>

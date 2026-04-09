@@ -77,6 +77,38 @@ export async function fetchPublishedPosts() {
   };
 }
 
+export async function fetchRecentPublishedPosts(limit = 4, excludeId) {
+  if (!isSupabaseConfigured || !supabase) {
+    return {
+      data: [],
+      error: null,
+      configured: false,
+    };
+  }
+
+  let query = supabase
+    .from("posts")
+    .select(
+      "id, title, description, image_url, author, category, read_time, content, published_at, created_at"
+    )
+    .eq("published", true)
+    .order("published_at", { ascending: false, nullsFirst: false })
+    .order("created_at", { ascending: false })
+    .limit(limit + (excludeId ? 1 : 0));
+
+  if (excludeId) {
+    query = query.neq("id", excludeId);
+  }
+
+  const { data, error } = await query;
+
+  return {
+    data: (data ?? []).map(mapPostRecord).slice(0, limit),
+    error,
+    configured: true,
+  };
+}
+
 export async function fetchPublishedPostById(id) {
   if (!isSupabaseConfigured || !supabase) {
     return {
