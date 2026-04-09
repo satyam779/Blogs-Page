@@ -555,6 +555,24 @@ a {
   color: #0f766e;
 }
 
+.blog-post-image-block {
+  margin: 28px 0;
+}
+
+.blog-post-content-image {
+  width: 100%;
+  display: block;
+  border-radius: 18px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+}
+
+.blog-post-image-caption {
+  margin-top: 12px;
+  text-align: center;
+  color: #64748b;
+  font-size: 14px;
+}
+
 .blog-post-sidebar {
   position: sticky;
   top: 24px;

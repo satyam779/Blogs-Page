@@ -43,6 +43,35 @@ function renderFormattedText(text) {
   return parts;
 }
 
+function renderContentBlock(block, index) {
+  const trimmedBlock = block.trim();
+  const imageMatch =
+    trimmedBlock.match(/^<image>(.*?)@(.*?)<\/?image>$/) ||
+    trimmedBlock.match(/^<image>(.*?)<\/?image>$/);
+
+  if (imageMatch) {
+    const imageUrl = (imageMatch[1] || "").trim();
+    const caption = (imageMatch[2] || "").trim();
+
+    return (
+      <figure key={index} className="blog-post-image-block">
+        <img
+          src={imageUrl}
+          alt={caption || "Article image"}
+          className="blog-post-content-image"
+        />
+        {caption && <figcaption className="blog-post-image-caption">{caption}</figcaption>}
+      </figure>
+    );
+  }
+
+  return (
+    <p key={index} className="blog-post-paragraph">
+      {renderFormattedText(block)}
+    </p>
+  );
+}
+
 function BlogPost() {
   const { id } = useParams();
   const [post, setPost] = useState(null);
@@ -162,11 +191,7 @@ function BlogPost() {
       <section className="blog-post-body-section">
         <div className="blog-post-shell blog-post-layout">
           <article className="blog-post-article">
-            {post.content.map((paragraph, index) => (
-              <p key={index} className="blog-post-paragraph">
-                {renderFormattedText(paragraph)}
-              </p>
-            ))}
+            {post.content.map((block, index) => renderContentBlock(block, index))}
           </article>
 
           <aside className="blog-post-sidebar">

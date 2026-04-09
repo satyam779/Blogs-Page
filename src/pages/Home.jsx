@@ -102,7 +102,7 @@ function Home() {
                             </div>
                           </div>
                           <span className="read-more-btn" style={{ display: "inline-block" }}>
-                            Read Article &rarr;
+                            Read Article 🢆
                           </span>
                         </div>
                       </div>
